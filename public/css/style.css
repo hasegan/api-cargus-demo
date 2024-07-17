@@ -1,0 +1,46 @@
+form{
+    background-color: rgba(128, 128, 128, 0.301);
+    border-radius: 20px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(255, 255, 255, 0.671) 0px 2px 4px 0px inset;
+}
+
+form > div > div > select{
+    max-width: 250px;
+    margin: auto;
+}
+
+b{
+    color: red;
+}
+.packageDetailsSection{
+text-align: center;
+}
+
+.coletDetails{
+    min-width: 250px;
+}
+
+.coletDetails > input , .coletDetails > select{
+    min-width: 150px;
+    width: 150px;
+}
+.coletDetails select{
+    margin-left: 5px !important;
+}
+.coletDetails input{
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    max-width: 100px;
+    margin-left: 5px !important;
+}
+
+.coletDetails .addon{
+    border-bottom-right-radius: 15%;
+    border-top-right-radius: 15%;
+    color: white;
+    background-color: rgb(108 117 125 / 66%);
+}
+
+form .text-danger{
+    font-size: small !important;
+}

@@ -23,18 +23,18 @@ class UrgentCurier
 
         if ($function == "LoginUser") {
             curl_setopt($this->Curl, CURLOPT_HTTPHEADER, array(
-                'Ocp-Apim-Subscription-Key: xxxxxxxxx',
-                'Ocp-Apim-Trace: true',
-                'Content-Type: application/json',
+                'Ocp-Apim-Subscription-Key:' => config('api.key'),
+                'Ocp-Apim-Trace' => 'true',
+                'Content-Type' => 'application/json',
                 'Content-Length: ' . strlen($parameters)
             ));
         } else {
             curl_setopt($this->Curl, CURLOPT_HTTPHEADER, array(
-                'Ocp-Apim-Subscription-Key: xxxxxxx',
-                'Ocp-Apim-Trace: true',
-                'Authorization: Bearer ' . $token,
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($parameters)
+                'Ocp-Apim-Subscription-Key:' => config('api.key'),
+                'Ocp-Apim-Trace' => 'true',
+                'Authorization' => 'Bearer ' . $token,
+                'Content-Type' => 'application/json',
+                'Content-Length' => strlen($parameters)
             ));
         }
 

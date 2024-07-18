@@ -20,4 +20,6 @@ Route::get('/', [FormController::class, 'index']);
 
 Route::post('/package-details', [PackageDetailsController::class, 'index']);
 
-Route::post('/login', [ApiController::class, 'login']);
+Route::get('/login', [ApiController::class, 'login']);
+
+Route::get('/login-user', [ApiController::class, 'loginUser']);

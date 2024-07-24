@@ -24,6 +24,7 @@
                     <span id="check-deliveryStart" class="text-danger"></span> --}}
 
                     <select id="deliveryStart" name="deliveryStart" onchange="removeWarning(this.id)" class="form-select">
+
                         <option value="0" selected disabled> - </option>
                         @foreach ($jsonDataCities as $jsonLocation)
                             <option value="{{ $jsonLocation['city'] }}">{{ $jsonLocation['city'] }}</option>

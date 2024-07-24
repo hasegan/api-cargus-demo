@@ -4,6 +4,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\PackageDetailsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ApiDHLController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,7 @@ Route::post('/package-details', [PackageDetailsController::class, 'index']);
 Route::get('/login', [ApiController::class, 'login']);
 
 Route::get('/login-user', [ApiController::class, 'loginUser']);
+
+Route::get('/dhl', [ApiDHLController::class, 'index']);
+
+Route::get('/dhl-locations', [ApiDHLController::class, 'locations']);

@@ -17,14 +17,20 @@ use App\Http\Controllers\ApiDHLController;
 |
 */
 
-Route::get('/', [FormController::class, 'index']);
+Route::get('/', [FormController::class, 'index'])->name('simple_form');
 
 Route::post('/package-details', [PackageDetailsController::class, 'index']);
+
+// ----------- CARGUS -----------
 
 Route::get('/login', [ApiController::class, 'login']);
 
 Route::get('/login-user', [ApiController::class, 'loginUser']);
 
-Route::get('/dhl', [ApiDHLController::class, 'index']);
+// ----------- DHL-----------
 
-Route::get('/dhl-locations', [ApiDHLController::class, 'locations']);
+Route::get('/dhl', [ApiDHLController::class, 'index'])->name('dhl_select_location');
+
+Route::get('/dhl-locations', [ApiDHLController::class, 'locations'])->name('dhl_locations');
+
+Route::get('/dhl-tracking', [ApiDHLController::class, 'shipmentTracking'])->name('shipmentTracking');

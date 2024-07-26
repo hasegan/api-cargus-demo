@@ -38,6 +38,30 @@
 </head>
 
 <body class="antialiased">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link {{ Route::is('simple_form') ? 'active text-decoration-underline' : '' }}"
+                        href="/">Simple Form</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ Route::is('dhl_select_location') || Route::is('dhl_locations') ? 'active text-decoration-underline' : '' }}"
+                        href="/dhl">DHL
+                        Locations</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ Route::is('shipmentTracking') ? 'active text-decoration-underline' : '' }}"
+                        href="/dhl-tracking">DHL
+                        Tracking</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
     @yield('content')
 </body>
 

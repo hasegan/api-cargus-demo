@@ -32,7 +32,7 @@ class ApiDHLController extends Controller
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => [
-                "DHL-API-Key:  " . config('api.dhl_key')
+                "DHL-API-Key:  " . config('api.dhl_key_locations')
             ],
         ]);
 
@@ -103,6 +103,40 @@ class ApiDHLController extends Controller
             // } else {
             //     echo "<p>No locations found.</p>";
             // }
+        }
+    }
+
+    // doesn't work because we don't have a valid tracking number (I think)
+    public function shipmentTracking()
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            // status 401
+            // CURLOPT_URL => "https://api-test.dhl.com/track/shipments?trackingNumber=00340434292135100162",
+
+            //statusd 404 : No shipment with given tracking number found.
+            CURLOPT_URL => "https://api-eu.dhl.com/track/shipments?trackingNumber=00340434292135100162",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => [
+                "DHL-API-Key: " . config('api.dhl_key_tracking'),
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            return view('dhl.trackingView')->with(compact('response'));
         }
     }
 }

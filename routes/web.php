@@ -34,3 +34,5 @@ Route::get('/dhl', [ApiDHLController::class, 'index'])->name('dhl_select_locatio
 Route::get('/dhl-locations', [ApiDHLController::class, 'locations'])->name('dhl_locations');
 
 Route::get('/dhl-tracking', [ApiDHLController::class, 'shipmentTracking'])->name('shipmentTracking');
+
+Route::get('/calculate-landed-cost', [ApiDHLController::class, 'calculateLandedCost'])->name('calculateLandedCost');

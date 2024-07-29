@@ -58,6 +58,11 @@
                         Tracking</a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ Route::is('calculateLandedCost') ? 'active text-decoration-underline' : '' }}"
+                        href="/calculate-landed-cost">DHL-Calculate Landed Cost</a>
+                </li>
+
             </ul>
         </div>
     </nav>

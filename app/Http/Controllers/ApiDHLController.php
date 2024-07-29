@@ -139,4 +139,14 @@ class ApiDHLController extends Controller
             return view('dhl.trackingView')->with(compact('response'));
         }
     }
+
+    public function calculateLandedCost(Request $request)
+    {
+
+        $jsonContents = File::get(base_path('public\\json\\european-countries.json'));
+        $jsonDataCountries = json_decode(json: $jsonContents, associative: true);
+
+        // dd($jsonDataCountries[0]['name']['common']);
+        return view('dhl.calculateLandedCost')->with(compact('jsonDataCountries'));
+    }
 }

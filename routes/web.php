@@ -36,3 +36,7 @@ Route::get('/dhl-locations', [ApiDHLController::class, 'locations'])->name('dhl_
 Route::get('/dhl-tracking', [ApiDHLController::class, 'shipmentTracking'])->name('shipmentTracking');
 
 Route::get('/calculate-landed-cost', [ApiDHLController::class, 'calculateLandedCost'])->name('calculateLandedCost');
+
+Route::get('/landed-cost-calculated', [ApiDHLController::class, 'verifyPostalCode'])->name('verifyPostalCode');
+
+Route::post('/get-cities', [ApiDHLController::class, 'getCities'])->name('get-cities');

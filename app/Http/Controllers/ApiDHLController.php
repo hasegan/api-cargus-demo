@@ -149,4 +149,87 @@ class ApiDHLController extends Controller
         // dd($jsonDataCountries[0]['name']['common']);
         return view('dhl.calculateLandedCost')->with(compact('jsonDataCountries'));
     }
+
+
+    function verifyPostalCode(Request $request)
+    {
+        $url = "https://www.gs1.org/voc/postalCode";
+
+        $countryCode =  $request->input('senderCountryCode');
+        $postalCode =  $request->input('senderPostalCode');
+        // dd($postalCode, $countryCode);
+
+        // Create the data array to be sent in the POST request
+        $data = json_encode(array(
+            "postalCode" => $postalCode,
+            "countryCode" => $countryCode
+        ));
+
+        // Initialize cURL session
+        $ch = curl_init($url);
+
+        // Set the options for cURL transfer
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data)
+        ));
+
+        // Execute the cURL request and get the response
+        $response = curl_exec($ch);
+
+        // Check for errors
+        if ($response === false) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            return array("error" => $error);
+        }
+
+        // Close the cURL session
+        curl_close($ch);
+
+        // Decode the JSON response
+        $responseData = json_decode($response, true);
+
+        dd($responseData);
+        // Return the response data
+        return $responseData;
+    }
+
+
+    public function getCities(Request $request)
+    {
+        $dataCC = $request->input('country_code');
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://api.countrystatecity.in/v1/countries/' . $dataCC . '/cities',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'X-CSCAPI-KEY:' . config('api.get_cities_key'),
+            ]
+        ]);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $html = '';
+
+        if ($response !== false) {
+            $response = json_decode($response);
+            if (is_iterable($response)) {
+                $html .= '<option value="0" selected disabled>Select City</option>';
+                foreach ($response as $city) {
+                    $html .= '<option value="' . $city->name . '">' . $city->name . '</option>';
+                }
+            }
+        } else {
+            $html .= '<option value="">No cities</option>';
+        }
+
+        return $html;
+    }
 }

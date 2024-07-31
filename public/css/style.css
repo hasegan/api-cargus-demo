@@ -47,3 +47,7 @@ form .text-danger{
 .collapse .card{
     width: fit-content;
 }
+
+.shippmentDetails select, .shippmentDetails input{
+    max-width: 300px;
+}

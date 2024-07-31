@@ -114,8 +114,10 @@ function nextQuestionDHL() {
     if ($("#shipperDetalis").hasClass("d-block")) {
         if (
             $("#senderCountry").find(":selected").val() != 0 &&
+            $("#senderStateName").find(":selected").val() != 0 &&
             $("#senderCityName").find(":selected").val() != 0 &&
             $("#senderAddress").val() &&
+            $("#senderAddressNumver").val() &&
             $("#senderPostalCode").val()
         ) {
             $(".backBtn").removeClass("d-none");
@@ -135,14 +137,23 @@ function nextQuestionDHL() {
             if ($("#senderCountry").find(":selected").val() == 0) {
                 $("#check-senderCountry").text("Country is required.");
             }
+            if ($("#senderStateName").find(":selected").val() == 0) {
+                $("#check-senderStateName").text("State is required.");
+            }
             if ($("#senderCityName").find(":selected").val() == 0) {
                 $("#check-senderCityName").text("City is required.");
             }
             if ($("#senderAddress").val() == "") {
                 $("#check-senderAddress").text("Address is required.");
             }
+            if ($("#senderAddressNumber").val() == "") {
+                $("#check-senderAddressNumber").text("Number is required.");
+            }
+
             if ($("#senderPostalCode").val() == "") {
-                $("#check-senderPostalCode").text("Postal Code is required.");
+                $("#check-senderPostalCode").text(
+                    "Search postal code for auto-complete."
+                );
             }
         }
     }
@@ -152,6 +163,7 @@ function nextQuestionDHL() {
     else if ($("#receiverDetalis").hasClass("d-block")) {
         if (
             $("#receiverCountry").find(":selected").val() != 0 &&
+            $("#receiverStateName").find(":selected").val() != 0 &&
             $("#receiverCityName").find(":selected").val() != 0 &&
             $("#receiverAddress").val() &&
             $("#receiverPostalCode").val()
@@ -173,6 +185,9 @@ function nextQuestionDHL() {
         }
         if ($("#receiverCountry").find(":selected").val() == 0) {
             $("#check-receiverCountry").text("Country is required.");
+        }
+        if ($("#receiverStateName").find(":selected").val() == 0) {
+            $("#check-receiverStateName").text("State is required.");
         }
         if ($("#receiverCityName").find(":selected").val() == 0) {
             $("#check-receiverCityName").text("City is required.");
@@ -252,16 +267,46 @@ function submitFormDHL() {
     }
 }
 
+function searchPostalCode() {}
+
 $(document).ready(function () {
+    // ------------- S E N D E R --------------
     $("#senderCountry").on("change", function () {
         var countryCODE = $(this).val();
         if (countryCODE) {
             $.ajax({
                 type: "POST",
                 // url: "../php/getCities.php",
+                url: "/get-states",
+                data: {
+                    country_code: encodeURIComponent(countryCODE),
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (html) {
+                    $("#senderStateName").html(html);
+                },
+            });
+        } else {
+            $("#senderStateName").html(
+                '<option value="">Select country first</option>'
+            );
+        }
+    });
+
+    $("#senderStateName").on("change", function () {
+        // console.log("here");
+        var countryCODE = $("#senderCountry").val();
+        var stateCODE = $(this).val();
+
+        if (countryCODE && stateCODE) {
+            // console.log(countryCODE, stateCODE);
+            $.ajax({
+                type: "POST",
+                // url: "../php/getCities.php",
                 url: "/get-cities",
                 data: {
                     country_code: encodeURIComponent(countryCODE),
+                    state_code: encodeURIComponent(stateCODE),
                     _token: $('meta[name="csrf-token"]').attr("content"),
                 },
                 success: function (html) {
@@ -270,10 +315,37 @@ $(document).ready(function () {
             });
         } else {
             $("#senderCityName").html(
-                '<option value="">Select country first</option>'
+                '<option value="">Select state first</option>'
             );
         }
     });
+
+    $("#searchPostalCodeSender").on("click", function () {
+        var countryCODE = $("#senderCountry").val();
+        var cityName = $("#senderCityName").val();
+        var senderAddress = $("#senderAddress").val();
+        if (countryCODE) {
+            $.ajax({
+                type: "POST",
+                // url: "../php/getCities.php",
+                url: "/get-postal-code",
+                data: {
+                    country_code: encodeURIComponent(countryCODE),
+                    city_name: encodeURIComponent(cityName),
+                    sender_address: encodeURIComponent(senderAddress),
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (html) {
+                    $("#senderPostalCode").val(html);
+                    // $("#senderPostalCode").html(html);
+                },
+            });
+        } else {
+            $("#senderPostalCode").val("Enter Street name ");
+        }
+    });
+
+    // ------------- R E C E I V E R --------------
 
     $("#receiverCountry").on("change", function () {
         var countryCODE = $(this).val();
@@ -281,9 +353,36 @@ $(document).ready(function () {
             $.ajax({
                 type: "POST",
                 // url: "../php/getCities.php",
+                url: "/get-states",
+                data: {
+                    country_code: encodeURIComponent(countryCODE),
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (html) {
+                    $("#receiverStateName").html(html);
+                },
+            });
+        } else {
+            $("#receiverStateName").html(
+                '<option value="">Select country first</option>'
+            );
+        }
+    });
+
+    $("#receiverStateName").on("change", function () {
+        // console.log("here");
+        var countryCODE = $("#receiverCountry").val();
+        var stateCODE = $(this).val();
+
+        if (countryCODE && stateCODE) {
+            // console.log(countryCODE, stateCODE);
+            $.ajax({
+                type: "POST",
+                // url: "../php/getCities.php",
                 url: "/get-cities",
                 data: {
                     country_code: encodeURIComponent(countryCODE),
+                    state_code: encodeURIComponent(stateCODE),
                     _token: $('meta[name="csrf-token"]').attr("content"),
                 },
                 success: function (html) {
@@ -292,8 +391,32 @@ $(document).ready(function () {
             });
         } else {
             $("#receiverCityName").html(
-                '<option value="">Select country first</option>'
+                '<option value="">Select state first</option>'
             );
+        }
+    });
+
+    $("#searchPostalCodeReceiver").on("click", function () {
+        var countryCODE = $("#receiverCountry").val();
+        var cityName = $("#receiverCityName").val();
+        var senderAddress = $("#receiverAddress").val();
+        if (countryCODE) {
+            $.ajax({
+                type: "POST",
+                // url: "../php/getCities.php",
+                url: "/get-postal-code",
+                data: {
+                    country_code: encodeURIComponent(countryCODE),
+                    city_name: encodeURIComponent(cityName),
+                    sender_address: encodeURIComponent(senderAddress),
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                },
+                success: function (html) {
+                    $("#receiverPostalCode").val(html);
+                },
+            });
+        } else {
+            $("#receiverPostalCode").val("Enter Street name ");
         }
     });
 });

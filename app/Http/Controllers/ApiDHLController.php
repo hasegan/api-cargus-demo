@@ -198,14 +198,48 @@ class ApiDHLController extends Controller
         return $responseData;
     }
 
-
-    public function getCities(Request $request)
+    public function getStates(Request $request)
     {
         $dataCC = $request->input('country_code');
         $curl = curl_init();
 
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.countrystatecity.in/v1/countries/' . $dataCC . '/states',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => array(
+                'X-CSCAPI-KEY:' . config('api.get_cities_key'),
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+
+        $html = '';
+
+        if ($response !== false) {
+            $response = json_decode($response);
+            if (is_iterable($response)) {
+                $html .= '<option value="0" selected disabled>Select State</option>';
+                foreach ($response as $state) {
+                    $state->name = str_replace("County", "", $state->name);
+                    $html .= '<option value="' . $state->iso2 . '">' . $state->name . '</option>';
+                }
+            }
+        } else {
+            $html .= '<option value="">No states</option>';
+        }
+        return $html;
+    }
+
+    public function getCities(Request $request)
+    {
+        $dataCC = $request->input('country_code');
+        $dataSC = $request->input('state_code');
+        $curl = curl_init();
+
         curl_setopt_array($curl, [
-            CURLOPT_URL => 'https://api.countrystatecity.in/v1/countries/' . $dataCC . '/cities',
+            CURLOPT_URL => 'https://api.countrystatecity.in/v1/countries/' . $dataCC . '/states/' . $dataSC . '/cities',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 'X-CSCAPI-KEY:' . config('api.get_cities_key'),
@@ -228,6 +262,39 @@ class ApiDHLController extends Controller
             }
         } else {
             $html .= '<option value="">No cities</option>';
+        }
+
+        return $html;
+    }
+
+    public function getPostalCode(Request $request)
+    {
+        $dataCC = $request->input('country_code');
+        $dataCN = $request->input('city_name');
+        $dataSN = $request->input('sender_address');
+
+        $searchData = "'" . $dataSN . ","  . $dataCN . ","  .  $dataCC . "'";
+        // dd($searchData);
+
+
+        $geocoder = new \OpenCage\Geocoder\Geocoder(config('api.pc_key'));
+        # no need to URI encode the query, the library does this for you
+        $result = $geocoder->geocode($searchData);
+
+        $dataResult = $result['results'];
+        $postalCode = $dataResult[0]['components']['postcode'];
+        // dd($dataResult[0]['components']['postcode']);
+
+        $html = '';
+
+        if ($result !== false) {
+            // $html .=  ' <input type="text" class="form-control" id="senderPostalCode" name="senderPostalCode"
+            //                     placeholder=" ' . $postalCode . '" value="' . $postalCode . '"disabled readonly>';
+            $html .= $postalCode;
+
+            // $('#senderPostalCode').val($po)
+        } else {
+            $html .= 'no valid street name';
         }
 
         return $html;

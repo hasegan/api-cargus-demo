@@ -39,4 +39,8 @@ Route::get('/calculate-landed-cost', [ApiDHLController::class, 'calculateLandedC
 
 Route::get('/landed-cost-calculated', [ApiDHLController::class, 'verifyPostalCode'])->name('verifyPostalCode');
 
+Route::post('/get-states', [ApiDHLController::class, 'getStates'])->name('get-states');
+
 Route::post('/get-cities', [ApiDHLController::class, 'getCities'])->name('get-cities');
+
+Route::post('/get-postal-code', [ApiDHLController::class, 'getPostalCode'])->name('get-postal-code');
